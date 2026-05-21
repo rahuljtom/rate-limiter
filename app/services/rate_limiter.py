@@ -54,19 +54,22 @@ def get_rate_limit_status(user_id: str, limit: int = 5, window_seconds: int = 60
     """
     Check current rate limit status without incrementing the counter.
     """
-    key = f"rate_limit:{user_id}"
-    now = time.time()
-    window_start = now - window_seconds
-    
-    pipeline = redis_client.pipeline()
-    pipeline.zremrangebyscore(key, 0, window_start)
-    pipeline.zcard(key)
-    results = pipeline.execute()
-    
-    current_count = results[1]
-    
-    return {
-        "limit": limit,
-        "remaining": max(0, limit - current_count),
-        "window_seconds": window_seconds
-    }
+    try:
+        key = f"rate_limit:{user_id}"
+        now = time.time()
+        window_start = now - window_seconds
+        
+        pipeline = redis_client.pipeline()
+        pipeline.zremrangebyscore(key, 0, window_start)
+        pipeline.zcard(key)
+        results = pipeline.execute()
+        
+        current_count = results[1]
+        
+        return {
+            "limit": limit,
+            "remaining": max(0, limit - current_count),
+            "window_seconds": window_seconds
+        }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
