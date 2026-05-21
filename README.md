@@ -23,11 +23,11 @@ graph TD
     Limiter -->|Within Limit| Transactions[Transaction Endpoint]
     Limiter -->|429 Too Many Requests| Reject[Rate Limit Response]
 
-    Gateway -->|Structured Logs / Metrics| Observability[Metrics & Logging]
+    Gateway -->|Structured Logs and Metrics| Observability[Observability Layer]
 
-    Observability -->|Request Counts / Latency| Metrics[/metrics Endpoint]
+    Observability -->|Request Counts and Latency| Metrics[Metrics Endpoint]
 
-    DevOps[Docker Compose / Render] --> Gateway
+    DevOps[Docker Compose and Render Deployment] --> Gateway
 ```
 
 ## 3. Design Decisions
