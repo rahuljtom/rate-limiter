@@ -8,7 +8,7 @@ A backend portfolio project demonstrating a robust API rate limiter. It uses a *
 - **Database**: PostgreSQL (Stores users and credentials)
 - **Cache / Rate Limiter**: Redis (Stores rate-limit counts using Sorted Sets)
 - **Auth**: JWT (JSON Web Tokens) with bcrypt password hashing
-- **Infrastructure**: Docker & Docker Compose (Local), Railway (Production)
+- **Infrastructure**: Docker & Docker Compose (Local), Render (Production)
 
 ## 3. Design Decisions
 - **Sliding Window vs Token Bucket**: Chosen sliding window using Redis `ZSET` to allow for highly accurate, millisecond-level precision of request throttling without the burst problems associated with fixed-window counters.
