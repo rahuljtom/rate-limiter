@@ -74,20 +74,40 @@ def protected(user_id: str = Depends(get_current_user)):
         "user_id": user_id
     }
 
+from fastapi import Header
+from app.services.idempotency import get_idempotent_response, save_idempotent_response
+
 # -------------------------
-# TRANSACTIONS (Rate Limited)
+# TRANSACTIONS (Rate Limited & Idempotent)
 # -------------------------
 @app.post("/transactions")
-def create_transaction(user_id: str = Depends(get_current_user)):
-    # 1. Check rate limit (e.g., 5 requests per 60 seconds)
+def create_transaction(
+    user_id: str = Depends(get_current_user),
+    idempotency_key: str = Header(..., alias="Idempotency-Key", description="Unique key to prevent duplicate transactions")
+):
+    # 1. Check if we already processed this exact transaction (Idempotency check)
+    cache_key = f"{user_id}:{idempotency_key}"
+    cached_response = get_idempotent_response(cache_key)
+    
+    if cached_response:
+        # If we have it, return the cached successful response instead of running it again!
+        cached_response["message"] = "Transaction returned from cache (Idempotent)"
+        return cached_response
+
+    # 2. Check rate limit
     limit_info = check_rate_limit(user_id, limit=5, window_seconds=60)
     
-    # 2. Process transaction (mocked)
-    return {
+    # 3. Process the actual transaction (mocked)
+    response = {
         "message": "Transaction created successfully",
         "transaction_id": "txn_12345",
         "rate_limit": limit_info
     }
+    
+    # 4. Save the successful response to Redis so future duplicate requests are caught
+    save_idempotent_response(cache_key, response)
+    
+    return response
 
 # -------------------------
 # RATE LIMIT STATUS
