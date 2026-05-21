@@ -4,11 +4,31 @@
 A backend portfolio project demonstrating a robust API rate limiter. It uses a **sliding window algorithm** backed by Redis to restrict the number of transactions a user can perform within a given timeframe. If a user exceeds their quota, they receive a `429 Too Many Requests` response.
 
 ## 2. Architecture
-- **Web Framework**: FastAPI (Python)
-- **Database**: PostgreSQL (Stores users and credentials)
-- **Cache / Rate Limiter**: Redis (Stores rate-limit counts using Sorted Sets)
-- **Auth**: JWT (JSON Web Tokens) with bcrypt password hashing
-- **Infrastructure**: Docker & Docker Compose (Local), Render (Production)
+```mermaid
+graph TD
+    Client[Client App / SDK / Postman] -->|HTTP Request + JWT| Gateway[FastAPI API Gateway]
+
+    Gateway -->|Verify Token / User Lookup| Auth[Auth Middleware]
+    Auth --> Postgres[(PostgreSQL)]
+
+    Gateway -->|Sliding Window Check| Limiter[Rate Limiter Service]
+
+    Limiter -->|Redis Pipeline Operations| Redis[(Redis Sorted Sets)]
+
+    Redis -->|ZREMRANGEBYSCORE| Cleanup[Remove Expired Requests]
+    Redis -->|ZADD| Insert[Insert Current Timestamp]
+    Redis -->|ZCARD| Count[Count Active Requests]
+    Redis -->|EXPIRE| TTL[Window Expiration]
+
+    Limiter -->|Within Limit| Transactions[Transaction Endpoint]
+    Limiter -->|429 Too Many Requests| Reject[Rate Limit Response]
+
+    Gateway -->|Structured Logs / Metrics| Observability[Metrics & Logging]
+
+    Observability -->|Request Counts / Latency| Metrics[/metrics Endpoint]
+
+    DevOps[Docker Compose / Render] --> Gateway
+```
 
 ## 3. Design Decisions
 - **Sliding Window vs Token Bucket**: Chosen sliding window using Redis `ZSET` to allow for highly accurate, millisecond-level precision of request throttling without the burst problems associated with fixed-window counters.
