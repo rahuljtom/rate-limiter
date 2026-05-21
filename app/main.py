@@ -10,10 +10,15 @@ load_dotenv()
 # CREATE TABLES
 Base.metadata.create_all(bind=engine)
 
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from app.services.rate_limiter import check_rate_limit, get_rate_limit_status, RateLimitExceeded
+from app.frontend import html_content
 
 app = FastAPI()
+
+@app.get("/")
+def serve_dashboard():
+    return HTMLResponse(content=html_content)
 
 @app.exception_handler(RateLimitExceeded)
 def rate_limit_handler(request, exc: RateLimitExceeded):

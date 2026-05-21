@@ -3,13 +3,16 @@ import time
 import uuid
 import redis
 
-# Connect to Redis
+from app.services.circuit_breaker import circuit_breaker
+
+# Connect to Redis (reusing the same connection string logic)
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
 class RateLimitExceeded(Exception):
     pass
 
+@circuit_breaker
 def check_rate_limit(user_id: str, limit: int = 5, window_seconds: int = 60) -> dict:
     """
     Sliding window rate limiter using Redis Sorted Sets.
