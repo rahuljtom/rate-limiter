@@ -3,8 +3,8 @@
 ## What This Is
 A FastAPI backend implementing Redis-backed sliding window rate limiting with JWT authentication and request-level observability. It uses a **sliding window algorithm** backed by Redis to restrict the number of transactions a user can perform within a given timeframe. If a user exceeds their quota, they receive a `429 Too Many Requests` response.
 
-Live : https://rate-limiter-tb19.onrender.com/
-Walkthrough (2 min): 
+- Live : https://rate-limiter-tb19.onrender.com/
+- Walkthrough (2 min): 
 
 ## Architecture
 ```mermaid
