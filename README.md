@@ -14,6 +14,7 @@ A FastAPI backend implementing Redis-backed sliding window rate limiting with JW
       alt="Transaction Rate Limiter Demo"
       width="850"
     />
+    </a>
 </p>
 
 ## Architecture
