@@ -7,14 +7,13 @@ A FastAPI backend implementing Redis-backed sliding window rate limiting with JW
 - Live: https://rate-limiter-tb19.onrender.com/
 - Walkthrough (3.5 mins): https://www.loom.com/share/caeacdba84ad477cbdf3aaa1b1a49b06
 
-<div>
-    <a href="https://www.loom.com/share/caeacdba84ad477cbdf3aaa1b1a49b06">
-      <p> Transaction Rate Limiter Demo </p>
-    </a>
-    <a href="https://www.loom.com/share/caeacdba84ad477cbdf3aaa1b1a49b06">
-      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/caeacdba84ad477cbdf3aaa1b1a49b06-8ba10b6eb1a3dfdc-full-play.gif#t=0.1">
-    </a>
-  </div>
+<p align="center">
+    <img
+      src="https://cdn.loom.com/sessions/thumbnails/caeacdba84ad477cbdf3aaa1b1a49b06-8ba10b6eb1a3dfdc-full-play.gif#t=0.1"
+      alt="Transaction Rate Limiter Demo"
+      width="850"
+    />
+</p>
 
 ## Architecture
 ```mermaid
